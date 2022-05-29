@@ -1,0 +1,70 @@
+CREATE TABLE Addres (addressId INTEGER PRIMARY KEY ,city TEXT NOT NULL,streat TEXT NOT NULL)
+
+CREATE TABLE Client (clientId INTEGER PRIMARY KEY NOT NULL,firstName TEXT NOT NULL
+,lastName TEXT NOT NULL,
+nationalNumber TEXT NOT NULL,birthYear TEXT NOT NULL,gender TEXT NOT NULL,
+addressId INTEGER UNIQUE FOREIGN KEY  REFERENCES Addres(addressId)
+)
+
+CREATE TABLE Specialization (speID INTEGER PRIMARY KEY NOT NULL ,speName TEXT NOT NULL)
+
+CREATE TABLE Doctor (doctorId INTEGER PRIMARY KEY NOT NULL,
+firstName TEXT NOT NULL,lastName TEXT NOT NULL,secondName TEXT NOT NULL,gender TEXT NOT NULL,
+phoneNumer TEXT NOT NULL
+,speID INTEGER ,FOREIGN KEY (speID) REFERENCES Specialization (speID) ON DELETE CASCADE,
+addressId INTEGER UNIQUE FOREIGN KEY  REFERENCES Addres(addressId)
+)
+
+CREATE TABLE visType (typeId INTEGER PRIMARY KEY, typeName TEXT NOT NULL)
+
+CREATE TABLE Visit (visitID INTEGER PRIMARY KEY NOT NULL,visitDate TEXT NOT NULL,
+doctorId INTEGER ,FOREIGN KEY (doctorId) REFERENCES Doctor (doctorId) ON DELETE CASCADE,
+clientId INTEGER ,FOREIGN KEY (clientId) REFERENCES Client (clientId) ON DELETE CASCADE
+, typeId INTEGER UNIQUE FOREIGN KEY  REFERENCES visType (typeId)
+)
+
+
+
+CREATE TABLE diagnosis (diagId INTEGER PRIMARY KEY ,diagDescription TEXT NOT NULL,
+ visitID INTEGER UNIQUE FOREIGN KEY  REFERENCES Visit(visitID)
+)
+
+CREATE TABLE Medicine (midId INTEGER PRIMARY KEY, midName TEXT NOT NULL)
+
+CREATE TABLE InsuranceContract  (insuranceId INTEGER PRIMARY KEY ,insuranceValue TEXT NOT NULL
+, clientId INTEGER UNIQUE FOREIGN KEY  REFERENCES Client (clientId)
+)
+
+CREATE TABLE Servicei (ServiceiId INTEGER PRIMARY KEY, ServiceiName TEXT NOT NULL,
+insuranceId INTEGER ,FOREIGN KEY (insuranceId) REFERENCES InsuranceContract (insuranceId) ON DELETE CASCADE,
+)
+
+CREATE TABLE InsuranceDate (dateID INTEGER PRIMARY KEY ,startDate TEXT NOT NULL, endDate TEXT NOT NULL
+, insuranceId INTEGER UNIQUE FOREIGN KEY  REFERENCES InsuranceContract (insuranceId)
+)
+
+CREATE TABLE Installment (InstallmentId INTEGER PRIMARY KEY, InstallmentValue TEXT NOT NULL,
+InstallmentDate TEXT NOT NULL,
+insuranceId INTEGER ,FOREIGN KEY (insuranceId) REFERENCES InsuranceContract (insuranceId) ON DELETE CASCADE,)
+
+CREATE TABLE Employee (EmployeeId INTEGER PRIMARY KEY, EmployeeName TEXT NOT NULL, EmployeeGender 
+TEXT NOT NULL,
+)
+
+CREATE TABLE VisitState (VisitStateId INTEGER PRIMARY KEY, VisSTATE TEXT NOT NULL, stateDescription
+TEXT NOT NULL,
+EmployeeId INTEGER ,FOREIGN KEY (EmployeeId) REFERENCES Employee (EmployeeId) ON DELETE CASCADE,)
+
+CREATE TABLE IncuranceServices (inSerId INTEGER PRIMARY KEY, 
+insuranceId INTEGER ,FOREIGN KEY (insuranceId) REFERENCES InsuranceContract (insuranceId) ON DELETE NO ACTION,
+ServiceiId INTEGER ,FOREIGN KEY (ServiceiId) REFERENCES Servicei (ServiceiId) ON DELETE NO ACTION,)
+
+CREATE TABLE prescription (preId INTEGER PRIMARY KEY,visitId INTEGER UNIQUE FOREIGN KEY  REFERENCES Visit(visitId))
+
+
+CREATE TABLE prescItem (itemId INTEGER PRIMARY KEY ,quentity TEXT NOT NULL ,
+
+preId INTEGER ,FOREIGN KEY (preId) REFERENCES prescription (preId) ON DELETE NO ACTION,
+midId INTEGER ,FOREIGN KEY (midId) REFERENCES Medicine (midId) ON DELETE NO ACTION,)
+
+
